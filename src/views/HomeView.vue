@@ -6,7 +6,7 @@
         <h1>Welcome to our Cocktail Emporium</h1>
         <p>Discover a world of exquisite cocktails and unparalleled service at our Cocktail Emporium. Indulge in a curated selection of classic and innovative libations, expertly crafted by our skilled mixologists.</p>
         <router-link to="/order" class="header-button">Order Now</router-link>
-        <router-link to="/forum" class="header-button-2">Explore Cocktails</router-link>
+        <router-link to="/forum" class="header-button-2">Explore Forum</router-link>
       </div>
     </div>
 

@@ -1,59 +1,111 @@
 <template>
-    <div class="login">
-      <h1>Login</h1>
-      <form @submit.prevent="login">
-        <input type="text" v-model="username" placeholder="Username" required />
-        <input type="password" v-model="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        username: '',
-        password: '',
-        errorMessage: ''
-      };
-    },
-    methods: {
-      async login() {
-        try {
-          const response = await fetch('/api_user.php', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              username: this.username,
-              password: this.password
-            })
-          });
-          const data = await response.json();
-          if (response.ok) {
-            // Assume user authentication was successful and redirect to the dashboard
-            this.$emit('authenticated', true);
-            this.$router.replace({ name: 'Home' });
-          } else {
-            this.errorMessage = data.message || 'Login failed';
-          }
-        } catch (error) {
-          console.error('Error during login:', error);
-          this.errorMessage = 'An error occurred during login';
-        }
-      }
+  <div class="login-view">
+    <form @submit.prevent="handleLogin" class="login-form">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" v-model="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" v-model="password" required>
+      </div>
+      <div class="button-container">
+        <button type="submit" class="login-button">Login</button>
+        <button type="button" class="signup-button">Sign Up</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+      message: ''
+    };
+  },
+  methods: {
+    handleLogin() {
+      axios.post('https://mercury.swin.edu.au/cos30043/s103500095/my-backend/login.php', {
+        username: this.username,
+        password: this.password
+      })
+      .then(response => {
+        this.message = response.data.message;
+        alert(this.message);
+      })
+      .catch(error => {
+        console.error(error);
+        this.message = 'An error occurred. Please try again.';
+      });
     }
   }
-  </script>
-  
-  <style scoped>
-  .error {
-    color: red;
-    margin-top: 10px;
-  }
-  </style>
+}
+</script>
+
+<style scoped>
+.login-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: wheat;
+}
+
+.login-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left; /* Ensures labels and inputs are aligned to the left */
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between; /* Distributes space evenly between the buttons */
+}
+
+button {
+  flex: 1; /* Makes both buttons equal width */
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+  color: white;
+  background-color: #044c34;
+  margin-left: 5px;
+}
+
+button:hover {
+  background-color: #086848;
+}
+
+button:first-child {
+  margin-left: 0; /* Removes left margin from the first button */
+}
+</style>
+
   
