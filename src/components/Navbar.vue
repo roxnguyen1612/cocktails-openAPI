@@ -6,7 +6,7 @@
       <div class="nav-right">
         <router-link to="/order">Order</router-link>
         <router-link to="/forum">Forum</router-link>
-        <router-link to="/list" class="login-button">Login</router-link>
+        <router-link to="/login" class="login-button">Login</router-link>
       </div>
     </nav>
   </template>
