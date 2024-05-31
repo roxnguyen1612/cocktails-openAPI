@@ -12,7 +12,7 @@
       </div>
       <div class="button-container">
         <button type="submit" class="login-button">Login</button>
-        <button type="button" class="signup-button">Sign Up</button>
+        <router-link to="/signup"><button type="button" class="signup-button">Sign Up</button></router-link>
       </div>
     </form>
   </div>
@@ -30,21 +30,34 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      axios.post('https://mercury.swin.edu.au/cos30043/s103500095/my-backend/login.php', {
+    handleLogin() { //call to backend
+      axios.post('http://localhost:3000/login', {
         username: this.username,
         password: this.password
-      })
-      .then(response => {
-        this.message = response.data.message;
-        alert(this.message);
-      })
-      .catch(error => {
-        console.error(error);
-        this.message = 'An error occurred. Please try again.';
-      });
+      },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.request.responseURL.includes('/')) {
+            this.$store.commit('setAuthenticated', true); // Set isAuthenticated to true in Vuex store
+            // Redirect to /order
+            this.$router.push('/order');
+            
+          } else {
+            this.message = response.data.message;
+            alert(this.message);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          this.message = 'An error occurred. Please try again.';
+        });
     }
   }
+
 }
 </script>
 
@@ -69,7 +82,8 @@ export default {
 
 .form-group {
   margin-bottom: 15px;
-  text-align: left; /* Ensures labels and inputs are aligned to the left */
+  text-align: left;
+  /* Ensures labels and inputs are aligned to the left */
 }
 
 input[type="text"],
@@ -84,11 +98,13 @@ input[type="password"] {
 
 .button-container {
   display: flex;
-  justify-content: space-between; /* Distributes space evenly between the buttons */
+  justify-content: space-between;
+  /* Distributes space evenly between the buttons */
 }
 
 button {
-  flex: 1; /* Makes both buttons equal width */
+  flex: 1;
+  /* Makes both buttons equal width */
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -104,8 +120,7 @@ button:hover {
 }
 
 button:first-child {
-  margin-left: 0; /* Removes left margin from the first button */
+  margin-left: 0;
+  /* Removes left margin from the first button */
 }
 </style>
-
-  

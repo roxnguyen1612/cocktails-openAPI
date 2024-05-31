@@ -84,13 +84,11 @@ export default {
 }
 </script>
 
-
-
 <style>
 .forum {
   height: 100vh;
   background-color: wheat;
-  padding-top:10vh;
+  padding-top: 10vh;
 }
 
 .posts-container {
@@ -101,7 +99,7 @@ export default {
 }
 
 .post {
-  width:50%;
+  width: 50%;
   cursor: pointer;
   border: 1px solid grey;
   margin: 10px;
@@ -128,19 +126,21 @@ export default {
   /* Removes default margin to tighten layout */
 }
 
-.search-forum{
-  width:30%;
+.search-forum {
+  width: 30%;
   padding: 10px 20px;
   margin: 5px;
   border-radius: 10px;
 }
+
 /* General button styling */
 button {
   padding: 10px 20px;
   margin: 5px;
   border: none;
   border-radius: 5px;
-  background-color: #0a6b4b;  /* A nice blue shade */
+  background-color: #0a6b4b;
+  /* A nice blue shade */
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -148,10 +148,12 @@ button {
 }
 
 button:hover {
-  background-color: #044c34;  /* A darker shade of blue on hover */
+  background-color: #044c34;
+  /* A darker shade of blue on hover */
 }
 
 button:focus {
-  outline: none;  /* Removes the default focus outline */
+  outline: none;
+  /* Removes the default focus outline */
 }
 </style>
