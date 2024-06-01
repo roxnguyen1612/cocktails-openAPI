@@ -29,8 +29,10 @@
 import axios from 'axios';
 
 export default {
+
   data() {
     return {
+      //forum funcs
       drinks: [],
       loading: true,
       error: null,

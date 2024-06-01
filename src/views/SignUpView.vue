@@ -14,7 +14,7 @@
         <label for="confirm-password">Confirm Password</label>
         <input type="password" id="confirm-password" v-model="confirmPassword" required>
       </div>
-      <p style="color:red;">{{ message }}</p>
+      <div v-if="message" class="error-message">{{ message }}</div>
       <div class="button-container">
         <button type="submit">Sign Up</button>
         <router-link to="/login"><button type="button">Login</button></router-link>
@@ -37,18 +37,23 @@ export default {
   },
   methods: {
     handleSignup() {
+      if (!this.username || !this.password || !this.confirmPassword) {
+        this.message = 'Missing inputs';
+        return;
+      }
+
       if (this.password !== this.confirmPassword) {
         this.message = "Password not match";
         return;
       }
       else {
-        axios.post('http://localhost:3000/signup', {
+        axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/signup', {
           username: this.username,
           password: this.password
         })
           .then(response => {
             this.message = response.data.message;
-            alert(this.message);
+            this.$router.push('/login');
           })
           .catch(error => {
             console.error(error);

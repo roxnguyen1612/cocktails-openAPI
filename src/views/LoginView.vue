@@ -14,6 +14,7 @@
         <button type="submit" class="login-button">Login</button>
         <router-link to="/signup"><button type="button" class="signup-button">Sign Up</button></router-link>
       </div>
+      <div v-if="message" class="error-message">{{ message }}</div>
     </form>
   </div>
 </template>
@@ -31,7 +32,12 @@ export default {
   },
   methods: {
     handleLogin() { //call to backend
+      if (!this.username || !this.password) {
+        this.message = 'Please enter both username and password.';
+        return;
+      }
       axios.post('http://localhost:3000/login', {
+      //axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/login', {
         username: this.username,
         password: this.password
       },
@@ -48,7 +54,6 @@ export default {
             
           } else {
             this.message = response.data.message;
-            alert(this.message);
           }
         })
         .catch(error => {
