@@ -20,7 +20,7 @@
         <p>Category: {{ drink.strCategory }}</p>
         <img :src="drink.strDrinkThumb" :alt="`Image of ${drink.strDrink}`" />
         <p>Price: $22</p>
-        <button @click="addToCart(drink)">Buy</button>
+        <button @click="addToCart">Buy</button>
       </div>
     </div>
     <div class="navi-btn">
@@ -30,10 +30,7 @@
   </div>
 </template>
 
-
-
 <script>
-import { mapActions, mapState } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -45,6 +42,7 @@ export default {
       currentPage: 1,
       itemsPerPage: 6,
       searchTerm: 'm',  // Initialize the searchTerm
+      cartCount: 0,
       categories: [],  // Initialize categories array
       selectedCategory: ''
     };
@@ -53,7 +51,6 @@ export default {
     this.fetchDrinks();
   },
   methods: {
-    ...mapActions('cart', ['addToCart']),
     fetchDrinks() {
       const query = this.searchTerm.trim();
       const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`;
@@ -82,10 +79,13 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+    addToCart() {
+      this.cartCount += 1;
+      alert(`You have: ${this.cartCount} items in the cart`);
     }
   },
   computed: {
-    ...mapState('cart', ['items']),
     paginatedDrinks() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return this.filteredDrinks.slice(start, start + this.itemsPerPage);

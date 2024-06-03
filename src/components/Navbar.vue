@@ -6,6 +6,7 @@
     <div class="nav-right">
       <router-link v-if="isAuthenticated" to="/order">Order</router-link>
       <router-link v-if="isAuthenticated" to="/forum">Forum</router-link>
+      <router-link v-if="isAuthenticated" to="/user">User</router-link>
       <router-link v-if="!isAuthenticated" to="/login" class="login-button">Login</router-link>
       <button v-if="isAuthenticated" @click="logout">Logout</button>
     </div>
