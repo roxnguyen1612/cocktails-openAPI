@@ -33,33 +33,35 @@ export default {
   methods: {
     handleLogin() { //call to backend
       if (!this.username || !this.password) {
-        this.message = 'Please enter both username and password.';
+        this.message = 'Missing inputs';
         return;
+      } else {
+        axios.post('http://localhost:3000/login', {
+          //axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/login', {
+          username: this.username,
+          password: this.password
+        },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => {
+            if (response.request.responseURL.includes('/')) {
+              this.$store.commit('setAuthenticated', true); // Set isAuthenticated to true in Vuex store
+              // Redirect to /order
+              this.$router.push('/order');
+
+            } else {
+              this.message = response.data.message;
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            this.message = 'An error occurred. Please try again.';
+          });
       }
-      //axios.post('http://localhost:3000/login', {
-      axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/login', {
-        username: this.username,
-        password: this.password
-      },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (response.request.responseURL.includes('/')) {
-            this.$store.commit('setAuthenticated', true); // Set isAuthenticated to true in Vuex store
-            // Redirect to /order
-            this.$router.push('/order');
-            
-          } else {
-            this.message = response.data.message;
-          }
-        })
-        .catch(error => {
-          console.error(error);
-          this.message = 'An error occurred. Please try again.';
-        });
+
     }
   }
 

@@ -1,9 +1,17 @@
 <template>
   <div class="order">
-    <form @submit.prevent="fetchDrinks" class="search-order">
-      <input class="search-order-input" type="text" placeholder="Search available cocktails" v-model="searchTerm">
-      <button   type="submit">Search</button>
-    </form>
+    <!-- header functionalities -->
+    <div class="search-order">
+      <form @submit.prevent="fetchDrinks">
+        <input class="search-order-input" type="text" placeholder="Search available cocktails" v-model="searchTerm">
+        <button   type="submit">Search</button>
+      </form>
+      <select v-model="selectedCategory">
+        <option value="">All Categories</option>
+        <option v-for="category in categories" :key="category">{{ category }}</option>
+      </select>
+    </div>
+    
     <div v-if="loading">Loading...</div>
     <div v-if="error">An error occurred: {{ error.message }}</div>
     <div class="drinks-container" v-else>
@@ -12,7 +20,7 @@
         <p>Category: {{ drink.strCategory }}</p>
         <img :src="drink.strDrinkThumb" :alt="`Image of ${drink.strDrink}`" />
         <p>Price: $22</p>
-        <button @click="addToCart">Buy</button>
+        <button @click="addToCart(drink)">Buy</button>
       </div>
     </div>
     <div class="navi-btn">
@@ -25,6 +33,7 @@
 
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -36,13 +45,15 @@ export default {
       currentPage: 1,
       itemsPerPage: 6,
       searchTerm: 'm',  // Initialize the searchTerm
-      cartCount: 0
+      categories: [],  // Initialize categories array
+      selectedCategory: ''
     };
   },
   created() {
     this.fetchDrinks();
   },
   methods: {
+    ...mapActions('cart', ['addToCart']),
     fetchDrinks() {
       const query = this.searchTerm.trim();
       const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${query}`;
@@ -52,11 +63,15 @@ export default {
           this.drinks = response.data.drinks || [];  // Handle null response gracefully
           this.loading = false;
           this.currentPage = 1;  // Reset to first page with new search results
+          this.updateCategories();  // Update categories based on fetched drinks
         })
         .catch(error => {
           this.error = error;
           this.loading = false;
         });
+    },
+    updateCategories() {
+      this.categories = [...new Set(this.drinks.map(drink => drink.strCategory))];
     },
     nextPage() {
       if ((this.currentPage * this.itemsPerPage) < this.drinks.length) {
@@ -67,16 +82,20 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
-    },
-    addToCart() {
-      this.cartCount += 1;
-      alert(`You have: ${this.cartCount} items in the cart`);
     }
   },
   computed: {
+    ...mapState('cart', ['items']),
     paginatedDrinks() {
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      return this.drinks.slice(start, start + this.itemsPerPage);
+      return this.filteredDrinks.slice(start, start + this.itemsPerPage);
+    },
+    filteredDrinks() {
+      let filtered = this.drinks;
+      if (this.selectedCategory) {
+        filtered = filtered.filter(drink => drink.strCategory === this.selectedCategory);
+      }
+      return filtered;
     }
   }
 }

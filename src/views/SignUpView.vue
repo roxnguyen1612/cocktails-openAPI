@@ -14,7 +14,9 @@
         <label for="confirm-password">Confirm Password</label>
         <input type="password" id="confirm-password" v-model="confirmPassword" required>
       </div>
-      <div v-if="message" class="error-message">{{ message }}</div>
+      <div v-if="messages.length > 0" class="error-message" style="color:red;">
+          <p v-for="msg in messages" :key="msg">{{ msg }}</p>
+      </div>
       <div class="button-container">
         <button type="submit">Sign Up</button>
         <router-link to="/login"><button type="button">Login</button></router-link>
@@ -32,35 +34,50 @@ export default {
       username: '',
       password: '',
       confirmPassword: '',
-      message: ''
+      messages: []
     };
   },
   methods: {
     handleSignup() {
-      if (!this.username || !this.password || !this.confirmPassword) {
-        this.message = 'Missing inputs';
-        return;
-      }
+      this.messages = []; // Clear previous messages
 
-      if (this.password !== this.confirmPassword) {
-        this.message = "Password not match";
-        return;
-      }
-      else {
-        axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/signup', {
-          username: this.username,
-          password: this.password
+    if (!this.username || !this.password || !this.confirmPassword) {
+      this.messages.push('Missing inputs');
+    }
+
+    if (this.password !== this.confirmPassword) {
+      this.messages.push('Passwords do not match');
+    }
+
+    if (this.password.length < 8) {
+      this.messages.push('Password must be at least 8 characters long');
+    }
+
+    if (!this.username.match(/^[a-zA-Z0-9]+$/)) {
+      this.messages.push('Username must contain only alphanumeric characters');
+    }
+
+    if (this.username.length > 10) {
+      this.messages.push('Username must be less than 10 characters');
+    }
+
+    if (this.messages.length === 0) {
+      //API calls
+      axios.post('http://localhost:3000/signup', {
+        //axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/signup', {
+        username: this.username,
+        password: this.password
+      })
+        .then(response => {
+          this.message = response.data.message;
+          this.$router.push('/login');
         })
-          .then(response => {
-            this.message = response.data.message;
-            this.$router.push('/login');
-          })
-          .catch(error => {
-            console.error(error);
-            this.message = error;
-          });
-      }
-      // Handle signup logic here
+        .catch(error => {
+          console.error(error);
+          this.message = error;
+        });
+
+    }
     },
     handleCancel() {
       // Handle cancel logic, such as clearing the form or redirecting
