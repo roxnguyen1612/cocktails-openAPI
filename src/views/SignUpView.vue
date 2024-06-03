@@ -63,8 +63,8 @@ export default {
 
     if (this.messages.length === 0) {
       //API calls
-      axios.post('http://localhost:3000/signup', {
-        //axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/signup', {
+      //axios.post('http://localhost:3000/signup', {
+        axios.post('https://rdsbackend1612-9695fc0c30bf.herokuapp.com/signup', {
         username: this.username,
         password: this.password
       })
